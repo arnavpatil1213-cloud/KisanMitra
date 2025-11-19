@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KisanMitra</title>
+
+<style>
+  body{
+    margin:0;
+    font-family:Poppins,Arial,sans-serif;
+    background:linear-gradient(to bottom,#ff9933 0%,#ffffff 50%,#138808 100%);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  header{
+    text-align:center;
+    padding:10px;
+  }
+  header img{
+    height:80px;
+    margin-bottom:5px;
+  }
+  nav{
+    width:100%;
+    display:flex;
+    justify-content:space-around;
+    background:#2f6d2f;
+    color:#fff;
+    padding:10px 0;
+  }
+  nav button{
+    background:none;
+    border:none;
+    color:white;
+    font-size:15px;
+  }
+  main{
+    flex:1;
+    width:95%;
+    max-width:600px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    padding:15px;
+    margin-top:10px;
+  }
+  #location{
+    text-align:center;
+    color:#444;
+    margin-bottom:10px;
+  }
+  select,button{
+    padding:6px 8px;
+    border-radius:8px;
+    border:1px solid #ccc;
+  }
+  #voiceBtn{
+    background:#2f6d2f;
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    margin-top:10px;
+    border-radius:8px;
+  }
+  .section{ display:none; }
+  .active{ display:block; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="KisanMitra Logo">
+  <h1>KisanMitra</h1>
+</header>
+
+<nav>
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('market')">Market</button>
+  <button onclick="show('weather')">Weather</button>
+  <button onclick="show('tips')">Tips</button>
+  <button onclick="show('about')">About</button>
+</nav>
+
+<main>
+  <div id="location">Detecting your location...</div>
+
+  <div style="text-align:center;margin-bottom:15px;">
+    <label>🌏 Language:</label>
+    <select id="lang" onchange="changeLang()">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="mr">मराठी</option>
+      <option value="ta">தமிழ்</option>
+      <option value="te">తెలుగు</option>
+      <option value="bn">বাংলা</option>
+      <option value="gu">ગુજરાતી</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="ml">മലയാളം</option>
+      <option value="pa">ਪੰਜਾਬੀ</option>
+      <option value="or">ଓଡ଼ିଆ</option>
+    </select>
+  </div>
+
+  <section id="home" class="section active">
+    <h2 id="homeTitle"></h2>
+    <p id="homeText"></p>
+    <button id="voiceBtn" onclick="speakSection('homeText')">🔊 Listen</button>
+  </section>
+
+  <section id="market" class="section">
+    <h2 id="marketTitle"></h2>
+    <div id="marketList"></div>
+    <button id="voiceBtn" onclick="speakSection('marketList')">🔊 Listen</button>
+  </section>
+
+  <section id="weather" class="section">
+    <h2 id="weatherTitle"></h2>
+    <p id="weatherText"></p>
+    <button id="voiceBtn" onclick="speakSection('weatherText')">🔊 Listen</button>
+  </section>
+
+  <section id="tips" class="section">
+    <h2 id="tipsTitle"></h2>
+    <ul id="tipsList"></ul>
+    <button id="voiceBtn" onclick="speakSection('tipsList')">🔊 Listen</button>
+  </section>
+
+  <section id="about" class="section">
+    <h2 id="aboutTitle"></h2>
+    <p id="aboutText"></p>
+    <button id="voiceBtn" onclick="speakSection('aboutText')">🔊 Listen</button>
+  </section>
+</main>
+
+<script>
+function show(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+const data={
+ en:{
+  homeTitle:"Welcome to KisanMitra",
+  homeText:"Empowering Indian farmers with smart technology.",
+  marketTitle:"Daily Market Prices (₹/kg)",
+  weatherTitle:"Weather Updates",
+  weatherText:"Fetching weather...",
+  tipsTitle:"Farming Tips",
+  tips:["Use compost","Water early","Check for pests","Rotate crops"],
+  aboutTitle:"About KisanMitra",
+  aboutText:"Team KisanXCoders — DPS Navi Mumbai | Buildathon 2025"
+ },
+ hi:{
+  homeTitle:"किसानमित्र में स्वागत है",
+  homeText:"स्मार्ट तकनीक से किसानों को सशक्त बनाना।",
+  marketTitle:"दैनिक बाज़ार मूल्य (₹/किलो)",
+  weatherTitle:"मौसम जानकारी",
+  weatherText:"मौसम लोड हो रहा है...",
+  tipsTitle:"खेती सुझाव",
+  tips:["जैविक खाद","सुबह सिंचाई","कीट जाँच","फसल परिवर्तन"],
+  aboutTitle:"किसानमित्र परिचय",
+  aboutText:"टीम किसानएक्सकोडर्स — डीपीएस नवी मुंबई | Buildathon 2025"
+ }
+};
+
+let currentLang="en";
+
+function changeLang(){
+  currentLang=document.getElementById("lang").value;
+  loadLang();
+}
+
+function loadLang(){
+  const t=data[currentLang]||data.en;
+  homeTitle.innerText=t.homeTitle;
+  homeText.innerText=t.homeText;
+  marketTitle.innerText=t.marketTitle;
+  weatherTitle.innerText=t.weatherTitle;
+  weatherText.innerText=t.weatherText;
+  tipsTitle.innerText=t.tipsTitle;
+
+  tipsList.innerHTML="";
+  t.tips.forEach(i=>tipsList.innerHTML+=`<li>${i}</li>`);
+
+  aboutTitle.innerText=t.aboutTitle;
+  aboutText.innerText=t.aboutText;
+}
+loadLang();
+
+if("geolocation" in navigator){
+ navigator.geolocation.getCurrentPosition(pos=>{
+   location.innerText="📍 Lat "+pos.coords.latitude.toFixed(2)+", Lon "+pos.coords.longitude.toFixed(2);
+ });
+}else{
+ location.innerText="Location not supported";
+}
+
+function speakSection(id){
+  let text=document.getElementById(id).innerText;
+  let u=new SpeechSynthesisUtterance(text);
+  u.lang=currentLang;
+  speechSynthesis.speak(u);
+}
+// ------------ DAILY MARKET PRICE LOGIC ------------
+function getDailyVariation(seed){
+  const date=new Date().getDate();
+  return ((Math.sin(seed*date)+1)*0.05 - 0.025);   // ±2.5%
+}
+
+function generateMarketPrices(){
+  const crops={
+    Wheat:21,
+    Rice:25,
+    Maize:18,
+    Cotton:68,
+    Sugarcane:3.5,
+    Pulses:27,
+    Soybean:45
+  };
+
+  const todayPrices={};
+  let i=1;
+
+  for(let crop in crops){
+    const base=crops[crop];
+    const diff=base*getDailyVariation(i++);
+    todayPrices[crop]=(base+diff).toFixed(2);
+  }
+  return todayPrices;
+}
+
+function loadMarket(){
+  const prices=generateMarketPrices();
+  const ml=document.getElementById("marketList");
+
+  ml.innerHTML="";
+  for(let [crop,price] of Object.entries(prices)){
+    ml.innerHTML+=`<div style="margin:4px 0;">${crop}: ₹${price}/kg</div>`;
+  }
+
+  // Refresh button
+  const refreshBtn=document.createElement("button");
+  refreshBtn.innerText="🔄 Refresh Prices";
+  refreshBtn.onclick=()=>loadMarket();
+  refreshBtn.style.cssText="background:#2f6d2f;color:white;border:none;padding:8px 12px;margin-top:10px;border-radius:8px;";
+
+  ml.appendChild(refreshBtn);
+}
+loadMarket();
+
+
+// ------------ WEATHER SIMULATION ------------
+function fakeWeather(lat,lon){
+  const temp=(26 + Math.sin(lat+lon)*4).toFixed(1);
+  const rain=((Math.cos(lat-lon)+1)*50).toFixed(0);
+
+  document.getElementById("weatherText").innerText =
+    `Temperature: ${temp}°C | Expected Rainfall: ${rain} mm`;
+}
+
+if("geolocation" in navigator){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    fakeWeather(pos.coords.latitude,pos.coords.longitude);
+  });
+}
+
+
+// ------------ FOOTER ------------
+const footer=document.createElement("footer");
+footer.innerHTML=`
+  <div style="text-align:center;padding:10px;color:#2f6d2f;">
+    <hr style="border-top:1px solid #ccc;">
+    <p>© 2025 KisanMitra | Team KisanXCoders | DPS Navi Mumbai | Buildathon 2025</p>
+  </div>
+`;
+document.body.appendChild(footer);
+
+</script>
+
+</body>
+</html>
+
